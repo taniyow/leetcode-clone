@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
+
+import { auth } from "@/firebase/firebase";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 type Props = {};
 
@@ -11,8 +15,34 @@ function Signup({}: Props) {
     setAuthModalState((prev) => ({ ...prev, type }));
   };
 
+  const router = useRouter();
+
+  const [inputs, setInputs] = useState({email:'', displayName:'', password:''})
+
+  const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth);
+
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if(!inputs.email || !inputs.password || !inputs.displayName) return alert("Please fill all fields");
+    try {
+      const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password);
+      if(!newUser) return;
+      router.push('/');
+    } catch (error:any) {
+      alert(error.message)
+    }
+  }
+
+  useEffect(() => {
+    if(error) alert(error.message)
+  }, [error]);
+
   return (
-    <form className="space-y-6 px-6 py-4">
+    <form className="space-y-6 px-6 py-4" onSubmit={handleRegister}>
       <h3 className="text-xl font-medium text-white">Register to LeetClone</h3>
       <div>
         <label
@@ -21,11 +51,12 @@ function Signup({}: Props) {
           Email
         </label>
         <input
+          onChange={handleChangeInput}
           type="email"
           name="email"
           id="email"
           className="border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-          bg-white border-gray-500 placeholder-gray-500 text-white"
+          bg-gray-600 border-gray-500 placeholder-gray-500 text-white"
           placeholder="name@company.com"
         />
       </div>
@@ -36,11 +67,12 @@ function Signup({}: Props) {
           Display Name
         </label>
         <input
+          onChange={handleChangeInput}
           type="displayName"
           name="displayName"
           id="displayName"
           className="border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-          bg-white border-gray-500 placeholder-gray-500 text-white"
+          bg-gray-600 border-gray-500 placeholder-gray-500 text-white"
           placeholder="John Doe"
         />
       </div>
@@ -51,11 +83,12 @@ function Signup({}: Props) {
           Password
         </label>
         <input
+          onChange={handleChangeInput}
           type="password"
           name="password"
           id="password"
           className="border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-          bg-white border-gray-500 placeholder-gray-500 text-white"
+          bg-gray-600 border-gray-500 placeholder-gray-500 text-white"
           placeholder="**********"
         />
       </div>

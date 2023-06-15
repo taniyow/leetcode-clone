@@ -25,7 +25,7 @@ function Login({}: Props) {
           name="email"
           id="email"
           className="border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-          bg-white border-gray-500 placeholder-gray-500 text-white"
+          bg-gray-600 border-gray-500 placeholder-gray-500 text-white"
           placeholder="name@company.com"
         />
       </div>
@@ -40,7 +40,7 @@ function Login({}: Props) {
           name="password"
           id="password"
           className="border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-          bg-white border-gray-500 placeholder-gray-500 text-white"
+          bg-gray-600 border-gray-500 placeholder-gray-500 text-white"
           placeholder="**********"
         />
       </div>
